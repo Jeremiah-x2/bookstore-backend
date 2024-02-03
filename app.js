@@ -7,7 +7,10 @@ const { errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/bookstore');
+mongoose.connect(
+    'mongodb+srv://asdfasdf:asdfasdf@cluster0.pjllrgd.mongodb.net/bookstore'
+);
+// mongoose.connect('mongodb://127.0.0.1:27017/bookstore');
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
