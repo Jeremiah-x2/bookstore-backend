@@ -5,12 +5,9 @@ const asyncHandler = require('express-async-handler');
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-    ) {
+    if (req.cookies.token) {
         try {
-            token = req.headers.authorization.split(' ')[1];
+            token = req.cookies.token;
             const decoded = jwt.verify(token, 'hello');
             req.user = await User.findById(decoded.id).select('-password');
         } catch (error) {
@@ -20,10 +17,10 @@ const protect = asyncHandler(async (req, res, next) => {
         }
     }
 
-    if (!token) {
-        res.status(401);
-        throw new Error('Not Authorized');
-    }
+    // if (!token) {
+    //     res.status(401);
+    //     throw new Error('Not Authorized');
+    // }
     next();
 });
 

@@ -10,4 +10,7 @@ router
 
 router.get('/:orderId', protect, orderController.get_order_by_id);
 
+router.patch('/:orderId', protect, orderController.update_order);
+router.delete('/:orderId', protect, orderController.delete_order);
+
 module.exports = router;

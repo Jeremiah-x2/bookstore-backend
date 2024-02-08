@@ -3,55 +3,74 @@ const mongoose = require('mongoose');
 const Books = require('../models/books');
 const Order = require('../models/order');
 
-exports.get_books = (req, res) => {
-    Books.find()
-        .exec()
-        .then((result) => {
-            console.log(result);
-            res.json({ count: result.length, result });
-        })
-        .catch();
-};
+exports.get_books = async (req, res) => {
+    console.log(req.user);
+    if (req.user) {
+        try {
+            const books = await Books.find();
+            const booksWithOrders = await Promise.all(
+                books.map(async (book) => {
+                    const orders = await Order.findOne({
+                        book: book._id.toString(),
+                        user: req.user,
+                    });
+                    return {
+                        ...book.toObject(),
+                        orders,
+                    };
+                })
+            );
 
-exports.get_books_for_authenticated = async (req, res) => {
-    try {
-        // Query the Book model to get the list of books
-        const books = await Books.find();
+            res.json({ result: booksWithOrders });
+        } catch (error) {
+            console.error(error);
+            res.cookie('dfjskf', 'dksgjdsk');
 
-        // Fetch orders for each book
-        const booksWithOrders = await Promise.all(
-            books.map(async (book) => {
-                const orders = await Order.find({
-                    book: book._id.toString(),
-                    user: req.user,
-                });
-                return {
-                    ...book.toObject(),
-                    orders,
-                    boo: book._id,
-                    userr: req.user,
-                };
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    } else {
+        Books.find()
+            .exec()
+            .then((result) => {
+                res.cookie('dfjskf', 'dksgjdsk');
+                res.json({ count: result.length, result });
             })
-        );
-
-        res.json({ result: booksWithOrders });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+            .catch();
     }
 };
 
-exports.get_book_by_id = (req, res) => {
-    Books.findOne({ _id: req.params.bookId })
-        .exec()
-        .then((book) =>
-            res.status(200).json({ message: 'Success', item: book })
-        )
-        .catch((err) =>
-            res.status(500).json({ message: 'An Error occured', Error: err })
-        );
+exports.get_book_by_id = async (req, res) => {
+    try {
+        const bookById = await Books.findById(req.params.bookId);
+        console.log(bookById);
+        if (bookById) {
+            if (req.user) {
+                const isUserOrdered = await Order.findOne({
+                    book: bookById._id,
+                    user: req.user._id,
+                });
+                // console.log('Ordered\n'.repeat(3), isUserOrdered);
+                if (isUserOrdered) {
+                    res.json({
+                        ...bookById.toObject(),
+                        orders: isUserOrdered.toObject(),
+                    });
+                } else {
+                    res.json({ ...bookById.toObject() });
+                }
+            } else {
+                res.json({ ...bookById.toObject() });
+            }
+        } else {
+            console.log('Book not found');
+            throw new Error('Book not found');
+        }
+    } catch (error) {
+        res.json(error);
+    }
 };
 
+/*
 exports.create_order = async (req, res) => {
     const check = await Books.findOne({
         _id: req.params.orderId,
@@ -84,3 +103,4 @@ exports.update_order = async (req, res) => {
         .then((result) => res.json({ result }))
         .catch((err) => res.json({ err }));
 };
+*/

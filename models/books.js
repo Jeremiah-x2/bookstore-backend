@@ -14,15 +14,6 @@ const bookSchema = mongoose.Schema({
     stock_quantity: { type: Number },
     category: { type: String },
     image: { type: String },
-    orders: [
-        {
-            user: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-            },
-            quantity: Number,
-        },
-    ],
 });
 
 module.exports = mongoose.model('Book', bookSchema);

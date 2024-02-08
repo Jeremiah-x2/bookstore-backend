@@ -31,16 +31,18 @@ exports.create_order = async (req, res) => {
 };
 
 exports.get_orders = (req, res) => {
-    // {
-    //     _id: {
-    //         $in: ['65bc490cacc77bfcf11119b2', '65bc5031e69e9c87a1ef10b6'],
-    //     },
-    // }
-    Order.find({ user: req.user })
-        .populate('book')
-        .exec()
-        .then((orders) => res.json({ orders, user: req.user }))
-        .catch((err) => res.json({ err }));
+    if (req.user) {
+        Order.find({ user: req.user })
+            .populate('book')
+            .exec()
+            .then((orders) => {
+                res.cookie('orders', 'orders array');
+                res.json({ orders, user: req.user });
+            })
+            .catch((err) => res.json({ err }));
+    } else {
+        res.status(403).json({ message: 'User not logged in' });
+    }
 
     // Order.find({ user: req.user })
     //     .exec()
@@ -60,4 +62,37 @@ exports.get_order_by_id = (req, res) => {
             });
         })
         .catch((err) => res.status(500).json({ err }));
+};
+
+exports.update_order = async (req, res) => {
+    try {
+        const findAndUpdateOrder = await Order.findOneAndUpdate(
+            { book: req.params.orderId, user: req.user },
+            {
+                $inc: { quantity: req.body.incValue },
+            }
+        );
+
+        if (updateOrder.quantity < 1) {
+            const deleteOrder = await Order.findOneAndDelete({
+                _id: req.params.orderId,
+                user: req.user,
+            });
+            res.json({ message: 'Order deleted successfully' });
+            console.log('Deleted order', deleteOrder);
+        } else {
+            res.status(201).json(updateOrder);
+        }
+    } catch (error) {
+        res.json({ error });
+    }
+};
+
+exports.delete_order = async (req, res) => {
+    const deleteOrder = await Order.findOneAndDelete({
+        book: req.params.orderId,
+        user: req.user,
+    });
+    console.log(deleteOrder);
+    res.json(deleteOrder);
 };
