@@ -6,7 +6,8 @@ const userRoutes = require('./routes/user');
 const orderRoutes = require('./routes/order');
 const boughtItemRoutes = require('./routes/bought_items');
 const { errorHandler } = require('./middleware/errorMiddleware');
-mongoose.connect('mongodb://127.0.0.1:27017/bookstore');
+require('dotenv').config();
+mongoose.connect(`${process.env.MONGODB_URI}`);
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));

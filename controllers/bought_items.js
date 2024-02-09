@@ -12,8 +12,6 @@ exports.buy_items = (req, res) => {
                     user: req.user._id,
                     book: item.book,
                 });
-                // console.log('Checking item availability\n', item);
-                // if (!checkItem) {
                 const priceItem = await Book.findById(item.book);
                 const orderQuantity = await Order.findById(item._id);
                 const buyItem = new BoughtItem({
@@ -24,17 +22,10 @@ exports.buy_items = (req, res) => {
                     book: priceItem._id,
                 });
                 buyItem.save().then((success) => {
-                    Order.findByIdAndDelete(item._id).then((deletedOrder) => {
-                        // console.log(deletedOrder);
-                    });
+                    Order.findByIdAndDelete(item._id).then(
+                        (deletedOrder) => {}
+                    );
                 });
-                // } else {
-                //     const updateBoughtItem = await BoughtItem.findOne({
-                //         user: req.user,
-                //         order: item.order,
-                //     });
-                //     console.log('err');
-                // }
             });
 
             res.status(201).json(result);

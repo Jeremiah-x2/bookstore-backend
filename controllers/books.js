@@ -23,9 +23,6 @@ exports.get_books = async (req, res) => {
 
             res.json({ result: booksWithOrders });
         } catch (error) {
-            console.error(error);
-            res.cookie('dfjskf', 'dksgjdsk');
-
             res.status(500).json({ error: 'Internal Server Error' });
         }
     } else {
@@ -35,7 +32,9 @@ exports.get_books = async (req, res) => {
                 res.cookie('dfjskf', 'dksgjdsk');
                 res.json({ count: result.length, result });
             })
-            .catch();
+            .catch((error) => {
+                res.status(500).json({ Error: error });
+            });
     }
 };
 
