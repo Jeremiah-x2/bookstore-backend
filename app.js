@@ -9,6 +9,9 @@ const { errorHandler } = require('./middleware/errorMiddleware');
 require('dotenv').config();
 mongoose.connect(`${process.env.MONGODB_URI}`);
 
+const db = mongoose.connection;
+db.on('connected', () => console.log('Connected'));
+
 const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

@@ -5,38 +5,42 @@ const jwt = require('jsonwebtoken');
 
 exports.create_user = async (req, res) => {
     const { email, password, name } = req.body;
-
     try {
-        const isUser = await User.findOne({ email });
-        if (isUser) {
-            res.status(409).json({ message: 'Email already exists' });
-        } else {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const user = await new User({
-                _id: new mongoose.Types.ObjectId(),
-                email,
-                name,
-                password: hashedPassword,
+        const findUser = await User.findOne({ email: email });
+        console.log(findUser);
+        if (findUser) {
+            res.status(409).json({
+                message: 'User already exists',
+                user: findUser,
             });
-            user.save()
-                .then((newUser) => {
-                    const token = generateToken(newUser._id);
-                    res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 24 });
-                    res.status(201).json({
-                        message: 'Success',
-                        result,
-                        token: generateToken(newUser._id),
-                    });
-                })
-                .catch((err) =>
-                    res.status(500).json({
-                        message: 'An error occured',
-                        Error: err,
+        } else {
+            const hashPassword = await bcrypt.hash(password, 10);
+            if (hashPassword) {
+                const createUser = await new User({
+                    _id: new mongoose.Types.ObjectId(),
+                    email,
+                    name,
+                    password: hashPassword,
+                });
+                await createUser
+                    .save()
+                    .then((user) => {
+                        const token = generateToken(user._id);
+                        res.cookie('token', token);
+                        res.status(201).json({
+                            user: user,
+                            message: 'Successful',
+                            token,
+                        });
                     })
-                );
+                    .catch((error) =>
+                        res.status(500).json({ msg: 'An error occured', error })
+                    );
+            }
         }
     } catch (error) {
-        res.json({ error });
+        console.log('catch error', error);
+        res.json(error);
     }
 };
 
