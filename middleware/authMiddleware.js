@@ -7,7 +7,7 @@ const protect = asyncHandler(async (req, res, next) => {
     let token;
     if (req.cookies.token) {
         try {
-            token = req.cookies.token;
+            token = req.cookies._vercel_jwt;
             const decoded = jwt.verify(token, 'hello');
             req.user = await User.findById(decoded.id).select('-password');
         } catch (error) {
