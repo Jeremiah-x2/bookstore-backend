@@ -5,7 +5,7 @@ const asyncHandler = require('express-async-handler');
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;
-    if (req.cookies.token) {
+    if (req.cookies._vercel_jwt) {
         try {
             token = req.cookies._vercel_jwt;
             const decoded = jwt.verify(token, 'hello');
