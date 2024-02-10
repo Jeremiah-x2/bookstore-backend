@@ -9,40 +9,84 @@ exports.create_user = async (req, res) => {
         const findUser = await User.findOne({ email: email });
         console.log(findUser);
         if (findUser) {
-            res.status(409).json({
+            return res.status(409).json({
                 message: 'User already exists',
                 user: findUser,
             });
-        } else {
-            const hashPassword = await bcrypt.hash(password, 10);
-            if (hashPassword) {
-                const createUser = await new User({
-                    _id: new mongoose.Types.ObjectId(),
-                    email,
-                    name,
-                    password: hashPassword,
-                });
-                await createUser
-                    .save()
-                    .then((user) => {
-                        const token = generateToken(user._id);
-                        res.cookie('token', token);
-                        res.status(201).json({
-                            user: user,
-                            message: 'Successful',
-                            token,
-                        });
-                    })
-                    .catch((error) =>
-                        res.status(500).json({ msg: 'An error occured', error })
-                    );
-            }
         }
+        const hashPassword = await bcrypt.hash(password, 10);
+        if (!hashPassword) {
+            throw new Error('Failed to hash password');
+        }
+        const createUser = await new User({
+            _id: new mongoose.Types.ObjectId(),
+            email,
+            name,
+            password: hashPassword,
+        }).save();
+
+        console.log('User created', createUser);
+        const token = generateToken(createUser._id);
+        res.cookie('token', 'token', {
+            maxAge: 1000 * 60 * 60 * 24,
+            // sameSite: 'none',
+        });
+        res.status(201).json({
+            user: createUser,
+            message: 'Successful',
+            token,
+        });
     } catch (error) {
-        console.log('catch error', error);
-        res.json(error);
+        console.error('Error:', error);
+        res.status(500).json({
+            msg: 'An error occurred',
+            error: error.message,
+        });
     }
 };
+
+// exports.create_user = async (req, res) => {
+//     const { email, password, name } = req.body;
+//     try {
+//         const findUser = await User.findOne({ email: email });
+//         console.log(findUser);
+//         if (findUser) {
+//             res.status(409).json({
+//                 message: 'User already exists',
+//                 user: findUser,
+//             });
+//         } else {
+//             const hashPassword = await bcrypt.hash(password, 10);
+//             if (hashPassword) {
+//                 const createUser = await new User({
+//                     _id: new mongoose.Types.ObjectId(),
+//                     email,
+//                     name,
+//                     password: hashPassword,
+//                 })
+//                     .save()
+//                     .then((user) => {
+//                         console.log(user);
+//                         const token = generateToken(user._id);
+//                         res.cookie('token', token, {
+//                             maxAge: 1000 * 60 * 60 * 24,
+//                         });
+//                         res.status(201).json({
+//                             user: user,
+//                             message: 'Successful',
+//                             token,
+//                         });
+//                     })
+//                     .catch((error) =>
+//                         res.status(500).json({ msg: 'An error occured', error })
+//                     );
+//             }
+//         }
+//     } catch (error) {
+//         console.log('catch error', error);
+//         res.json(error);
+//     }
+// };
 
 exports.login = (req, res) => {
     const { email, password } = req.body;
@@ -56,7 +100,6 @@ exports.login = (req, res) => {
                 const token = generateToken(user._id);
                 res.cookie('token', token, {
                     maxAge: 1000 * 60 * 60 * 24,
-                    // sameSite: 'None',
                 });
                 res.cookie('user', user._id);
                 res.status(201).json({
@@ -73,6 +116,7 @@ exports.login = (req, res) => {
 };
 
 exports.get_user = (req, res) => {
+    console.log(req.cookie);
     const { userId } = req.params;
     console.log(userId);
     if (req.user && req.user.id === userId) {
@@ -86,6 +130,12 @@ exports.get_user = (req, res) => {
             message: 'Not authorized to get the requested user',
         });
     }
+};
+
+exports.logout_post = (req, res) => {
+    console.log(req.user);
+    console.log(req.cookies);
+    res.cookie('hello', 'ddkljdklsjlk');
 };
 
 const generateToken = (id) => {
