@@ -59,7 +59,7 @@ exports.login = (req, res) => {
                 //     path: '/user',
                 //     secure: true,
                 // });
-                const cookie = `token=${token}; samesite=none; secure; max-age=3600000`;
+                const cookie = `token=${token}; samesite=lax; secure; max-age=3600000`;
                 res.setHeader('set-cookie', [cookie]);
                 res.status(201).json({
                     user,
