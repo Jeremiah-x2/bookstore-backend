@@ -59,11 +59,10 @@ exports.login = (req, res) => {
                     sameSite: 'none',
                     secure: true,
                 });
-                const cookie = `token=${token}; samesite=none; secure; max-age=3600000; httponly=true`;
-                res.setHeader('set-cookie', [cookie]);
+                // const cookie = `token=${token}; samesite=none; secure; max-age=3600000; httponly=true`;
+                // res.setHeader('set-cookie', [cookie]);
                 res.status(201).json({
                     user,
-                    token: generateToken(user._id),
                 });
             } else {
                 res.status(401).json({ message: 'Wrong password' });
