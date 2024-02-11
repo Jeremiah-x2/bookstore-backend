@@ -55,9 +55,8 @@ exports.login = (req, res) => {
                 const token = generateToken(user._id);
                 res.cookie('token', token, {
                     maxAge: 1000 * 60 * 60 * 24,
-                    sameSite: 'None',
+                    sameSite: 'lax',
                     secure: true,
-                    path: '/',
                 });
                 res.cookie('user', user._id);
                 res.status(201).json({
