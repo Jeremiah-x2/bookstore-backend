@@ -57,15 +57,16 @@ exports.login = (req, res) => {
             }
             if (user && bcrypt.compareSync(password, user.password)) {
                 const token = generateToken(user._id);
-                res.cookie('token123', token, {
-                    maxAge: 1000 * 60 * 60 * 24,
-                });
-                const cookie = `token=${token}; samesite=none; secure; max-age=3600000`;
-                res.setHeader('set-cookie', [cookie]);
-                // res.status(201).json({
-                //     user,
-                //     token: generateToken(user._id),
+                // res.cookie('token123', token, {
+                //     maxAge: 1000 * 60 * 60 * 24,
+
                 // });
+                const cookie = `token=${token}; samesite=none; secure; max-age=3600000; httponly=true`;
+                res.setHeader('set-cookie', [cookie]);
+                res.status(201).json({
+                    user,
+                    token: generateToken(user._id),
+                });
             } else {
                 res.status(401).json({ message: 'Wrong password' });
             }
