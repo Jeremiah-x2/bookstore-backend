@@ -27,7 +27,7 @@ exports.create_user = async (req, res) => {
         const token = generateToken(createUser._id);
         res.cookie('token', token, {
             maxAge: 1000 * 60 * 60 * 24,
-            sameSite: 'lax',
+            sameSite: 'none',
             secure: true,
         });
         res.status(201).json({
@@ -56,7 +56,7 @@ exports.login = (req, res) => {
                 const token = generateToken(user._id);
                 res.cookie('token', token, {
                     maxAge: 1000 * 60 * 60 * 24,
-                    sameSite: 'lax',
+                    sameSite: 'none',
                     secure: true,
                     // secure: false,
                 });
