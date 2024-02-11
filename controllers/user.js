@@ -56,6 +56,7 @@ exports.login = (req, res) => {
                 res.cookie('token', token, {
                     maxAge: 1000 * 60 * 60 * 24,
                     sameSite: 'lax',
+                    path: '/user',
                     secure: true,
                 });
                 res.cookie('user', user._id);
