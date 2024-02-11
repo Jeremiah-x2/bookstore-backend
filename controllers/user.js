@@ -57,6 +57,7 @@ exports.login = (req, res) => {
                     maxAge: 1000 * 60 * 60 * 24,
                     sameSite: 'None',
                     secure: true,
+                    path: 'https://bookstore-beryl.vercel.app/user/login',
                 });
                 res.cookie('user', user._id);
                 res.status(201).json({
