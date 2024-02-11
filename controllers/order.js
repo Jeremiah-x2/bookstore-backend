@@ -23,7 +23,11 @@ exports.create_order = async (req, res) => {
             .catch((err) =>
                 res
                     .status(500)
-                    .json({ message: 'An Error occured', Error: err })
+                    .json({
+                        message: 'An Error occured',
+                        Error: err,
+                        cook: req.cookies,
+                    })
             );
     } else {
         res.status(201).json({ message: 'Order already exists' });
