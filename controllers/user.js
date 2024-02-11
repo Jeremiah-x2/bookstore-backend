@@ -57,12 +57,13 @@ exports.login = (req, res) => {
             }
             if (user && bcrypt.compareSync(password, user.password)) {
                 const token = generateToken(user._id);
-                // res.cookie('token123', token, {
-                //     maxAge: 1000 * 60 * 60 * 24,
-
-                // });
-                const cookie = `token=${token}; samesite=none; secure; max-age=3600000; httponly=true, path=https://bookstore-beryl.vercel.app/`;
-                res.setHeader('set-cookie', [cookie]);
+                res.cookie('token', token, {
+                    maxAge: 1000 * 60 * 60 * 24,
+                    sameSite: 'lax',
+                    secure: true,
+                });
+                // const cookie = `token=${token}; samesite=none; secure; max-age=3600000; httponly=true`;
+                // res.setHeader('set-cookie', [cookie]);
                 res.status(201).json({
                     user,
                     token: generateToken(user._id),
@@ -96,7 +97,7 @@ exports.get_user = (req, res) => {
 exports.logout_post = (req, res) => {
     console.log(req.user);
     console.log(req.cookies);
-    res.cookie('token', 'ddkljdklsjlk');
+    res.cookie('token', 'ddkljdklsjlk', { maxAge: 1 });
     res.status(201).json({ msg: 'Logged out' });
 };
 
