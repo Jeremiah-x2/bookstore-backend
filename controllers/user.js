@@ -27,8 +27,10 @@ exports.create_user = async (req, res) => {
         const token = generateToken(createUser._id);
         res.cookie('token', token, {
             maxAge: 1000 * 60 * 60 * 24,
-            sameSite: 'Strict',
+            sameSite: 'none',
+            secu,
         });
+        // res.setHeader('set-cookie');
         res.status(201).json({
             user: createUser,
             message: 'Successful',
@@ -53,10 +55,9 @@ exports.login = (req, res) => {
             }
             if (user && bcrypt.compareSync(password, user.password)) {
                 const token = generateToken(user._id);
-                res.cookie('token', token, {
+                res.cookie('token123', token, {
                     maxAge: 1000 * 60 * 60 * 24,
-                    sameSite: 'lax',
-                    path: '/user',
+                    sameSite: 'none',
                     secure: true,
                 });
                 const cookie = `token=${token}; samesite=none; secure; max-age=3600000`;
