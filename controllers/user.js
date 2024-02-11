@@ -61,7 +61,7 @@ exports.login = (req, res) => {
                 //     maxAge: 1000 * 60 * 60 * 24,
 
                 // });
-                const cookie = `token=${token}; samesite=none; secure; max-age=3600000; httponly=true`;
+                const cookie = `token=${token}; samesite=none; secure; max-age=3600000; httponly=true, path=https://bookstore-beryl.vercel.app/`;
                 res.setHeader('set-cookie', [cookie]);
                 res.status(201).json({
                     user,
