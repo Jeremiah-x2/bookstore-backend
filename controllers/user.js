@@ -94,7 +94,7 @@ exports.get_user = (req, res) => {
 exports.logout_post = (req, res) => {
     console.log(req.user);
     console.log(req.cookies);
-    res.cookie('token', 'ddkljdklsjlk', { maxAge: 1 });
+    res.cookie('token', 'ddkljdklsjlk');
     res.status(201).json({ msg: 'Logged out' });
 };
 
