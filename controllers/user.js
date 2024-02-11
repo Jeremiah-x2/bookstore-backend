@@ -25,11 +25,13 @@ exports.create_user = async (req, res) => {
             password: hashPassword,
         }).save();
         const token = generateToken(createUser._id);
-        res.cookie('token', token, {
-            maxAge: 1000 * 60 * 60 * 24,
-            sameSite: 'none',
-            secure: true,
-        });
+        // res.cookie('token', token, {
+        //     maxAge: 1000 * 60 * 60 * 24,
+        //     sameSite: 'none',
+        //     secure: true,
+        // } );
+        const cookie = `token=${token}; samesite=none; secure; max-age=3600000; httponly=true`;
+        res.setHeader('set-cookie', [cookie]);
         res.status(201).json({
             user: createUser,
             message: 'Successful',
