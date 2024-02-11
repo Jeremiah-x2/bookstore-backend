@@ -60,7 +60,7 @@ exports.login = (req, res) => {
                 //     path: '/user',
                 //     secure: true,
                 // });
-                res.cookie('user', user._id);
+                res.setHeader('set-cookie', [cookie]);
                 res.status(201).json({
                     user,
                     token: generateToken(user._id),
