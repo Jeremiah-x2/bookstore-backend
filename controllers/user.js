@@ -57,8 +57,6 @@ exports.login = (req, res) => {
                 const token = generateToken(user._id);
                 res.cookie('token123', token, {
                     maxAge: 1000 * 60 * 60 * 24,
-                    sameSite: 'none',
-                    secure: true,
                 });
                 const cookie = `token=${token}; samesite=none; secure; max-age=3600000`;
                 res.setHeader('set-cookie', [cookie]);
