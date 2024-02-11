@@ -53,12 +53,13 @@ exports.login = (req, res) => {
             }
             if (user && bcrypt.compareSync(password, user.password)) {
                 const token = generateToken(user._id);
-                res.cookie('token', token, {
-                    maxAge: 1000 * 60 * 60 * 24,
-                    sameSite: 'lax',
-                    path: '/user',
-                    secure: true,
-                });
+                const cookie = `token=${token}; samesite=none; secure`;
+                // res.cookie('token', token, {
+                //     maxAge: 1000 * 60 * 60 * 24,
+                //     sameSite: 'lax',
+                //     path: '/user',
+                //     secure: true,
+                // });
                 res.cookie('user', user._id);
                 res.status(201).json({
                     user,
