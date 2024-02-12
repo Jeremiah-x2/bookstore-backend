@@ -61,7 +61,7 @@ exports.login = (req, res) => {
                 //     sameSite: 'none',
                 //     secure: true,
                 // });
-                const cookie = `token=${token}; samesite=none; secure; max-age=3600000;`;
+                const cookie = `token=${token}; samesite=none; max-age=3600000; path=/`;
                 res.setHeader('set-cookie', [cookie]);
                 res.status(201).json({
                     user,
