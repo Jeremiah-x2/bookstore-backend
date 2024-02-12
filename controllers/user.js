@@ -30,7 +30,7 @@ exports.create_user = async (req, res) => {
         //     sameSite: 'none',
         //     secure: true,
         // } );
-        const cookie = `token=${token}; samesite=none; secure; max-age=3600000; httponly=false`;
+        const cookie = `token=${token}; samesite=none; secure; max-age=3600000;`;
         res.setHeader('set-cookie', [cookie]);
         res.status(201).json({
             user: createUser,
@@ -61,7 +61,7 @@ exports.login = (req, res) => {
                 //     sameSite: 'none',
                 //     secure: true,
                 // });
-                const cookie = `token=${token}; samesite=none; secure; max-age=3600000; path=/`;
+                const cookie = `token=${token}; samesite=none; secure; max-age=3600000;`;
                 res.setHeader('set-cookie', [cookie]);
                 res.status(201).json({
                     user,
