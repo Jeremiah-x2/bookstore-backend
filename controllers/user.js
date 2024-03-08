@@ -2,6 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 exports.create_user = async (req, res) => {
     const { email, password, name } = req.body;
@@ -25,7 +26,7 @@ exports.create_user = async (req, res) => {
             password: hashPassword,
         }).save();
         const token = generateToken(createUser._id);
-        
+
         const cookie = `token=${token}; samesite=none; secure; max-age=3600000;`;
         res.setHeader('set-cookie', [cookie]);
         res.status(201).json({
@@ -92,5 +93,5 @@ exports.logout_post = (req, res) => {
 };
 
 const generateToken = (id) => {
-    return jwt.sign({ id }, 'hello');
+    return jwt.sign({ id }, process.env.JWT_KEY);
 };
