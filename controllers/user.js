@@ -25,11 +25,7 @@ exports.create_user = async (req, res) => {
             password: hashPassword,
         }).save();
         const token = generateToken(createUser._id);
-        // res.cookie('token', token, {
-        //     maxAge: 1000 * 60 * 60 * 24,
-        //     sameSite: 'none',
-        //     secure: true,
-        // } );
+        
         const cookie = `token=${token}; samesite=none; secure; max-age=3600000;`;
         res.setHeader('set-cookie', [cookie]);
         res.status(201).json({
@@ -71,7 +67,7 @@ exports.login = (req, res) => {
 };
 
 exports.get_user = (req, res) => {
-    console.log(req.cookie);
+    console.log(req.cookies);
     const { userId } = req.params;
     console.log(userId);
     if (req.user && req.user.id === userId) {

@@ -48,13 +48,7 @@ exports.get_orders = (req, res) => {
         res.status(403).json({ message: 'User not logged in' });
     }
 
-    // Order.find({ user: req.user })
-    //     .exec()
-    //     .then((orders) => {
-    //         // res.json({ orders, user: req.user });
-    //         Order.find()
-    //     })
-    //     .catch((err) => res.json({ err }));
+  
 };
 
 exports.get_order_by_id = (req, res) => {

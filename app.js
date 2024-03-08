@@ -18,10 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use((req, res, next) => {
-    res.header(
-        'Access-Control-Allow-Origin',
-        'https://bookstore-beryl.vercel.app'
-    );
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header(
         'Access-Control-Allow-Headers',
         'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie'
@@ -37,15 +34,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.get('/set-cookie', (req, res) => {
-//     res.cookie('newCookie', 'I am a new cookie');
-//     res.send('Cookies sent');
-// });
 
-// app.get('/get-cookie', (req, res) => {
-//     const cookie = req.cookies;
-//     console.log(cookie);
-// });
 app.use('/books', bookRoutes);
 app.use('/users', userRoutes);
 app.use('/orders', orderRoutes);

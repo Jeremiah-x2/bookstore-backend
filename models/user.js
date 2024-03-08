@@ -18,6 +18,8 @@ const userSchema = mongoose.Schema({
         required: [true, 'Please create a password'],
         minlength: [6, 'Minimum password length is 6 characters'],
     },
+    age: Number,
+    location: String,
 });
 
 module.exports = mongoose.model('User', userSchema);

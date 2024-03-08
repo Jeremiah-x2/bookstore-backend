@@ -29,7 +29,6 @@ exports.get_books = async (req, res) => {
         Books.find()
             .exec()
             .then((result) => {
-                res.cookie('dfjskf', 'dksgjdsk');
                 res.json({ count: result.length, result });
             })
             .catch((error) => {
@@ -48,7 +47,6 @@ exports.get_book_by_id = async (req, res) => {
                     book: bookById._id,
                     user: req.user._id,
                 });
-                // console.log('Ordered\n'.repeat(3), isUserOrdered);
                 if (isUserOrdered) {
                     res.json({
                         ...bookById.toObject(),
@@ -61,45 +59,9 @@ exports.get_book_by_id = async (req, res) => {
                 res.json({ ...bookById.toObject() });
             }
         } else {
-            console.log('Book not found');
-            throw new Error('Book not found');
+            res.status(404).json({ message: 'Book not found' });
         }
     } catch (error) {
-        res.json(error);
+        res.status(500).json(error);
     }
 };
-
-/*
-exports.create_order = async (req, res) => {
-    const check = await Books.findOne({
-        _id: req.params.orderId,
-        orders: { $elemMatch: { user: req.user } },
-    });
-    if (!check) {
-        Books.findOneAndUpdate(
-            { _id: req.params.orderId },
-            { $push: { orders: { user: req.user, quantity: 1 } } },
-            { returnOriginal: false }
-        )
-            .then((result) => res.json({ result, check }))
-            .catch((err) => res.json(err));
-    } else {
-        res.status(409).json({ message: 'Order already exists' });
-    }
-};
-
-exports.get_orders = (req, res) => {
-    Books.find({ 'orders.user': req.user })
-        .then((result) => res.json({ count: result.length, result }))
-        .catch((err) => res.json({ err }));
-};
-
-exports.update_order = async (req, res) => {
-    Books.updateOne(
-        { _id: req.params.orderId, 'orders.user': req.user },
-        { $inc: { 'orders.$.quantity': 5 } }
-    )
-        .then((result) => res.json({ result }))
-        .catch((err) => res.json({ err }));
-};
-*/
